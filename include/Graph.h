@@ -4,9 +4,13 @@
 #define EPSILON 1e-10
 
 #include <algorithm>
+#include <functional>
 #include <iostream>
+#include <stack>
 #include <vector>
 #include <unordered_map>
+
+enum class Color { White, Black, Grey };
 
 template<typename Vertex, typename Distance = double>
 class Graph {
@@ -134,8 +138,26 @@ public:
     //поиск кратчайшего пути
     std::vector<Edge> shortest_path(const Vertex& from, const Vertex& to) const;
 
-    //обход
-    std::vector<Vertex> walk(const Vertex& start_vertex) const;
+    // Traversing the graph in depth
+    void dfs(const Vertex& start_vertex, std::function<void(const Vertex&)> action) const {
+        std::unordered_map<Vertex, Color> colors;
+        std::vector<Vertex> result;
+        for (const Vertex& vertex : _vertices) 
+            colors[vertex] = Color::White;
+        dfs_helper(start_vertex, colors, action, result);
+    }
+
+private:
+    void dfs_helper(const Vertex& start_vertex, std::unordered_map<Vertex, Color>& colors, 
+        std::function<void(const Vertex&)> action, std::vector<Vertex>& result) const {
+        colors[start_vertex] = Color::Grey;
+        action(start_vertex);
+        result.push_back(start_vertex);
+        for (const Edge& edge : _edges.at(start_vertex))
+            if (colors[edge.to] == Color::White)
+                dfs_helper(edge.to, colors, action, result);
+        colors[start_vertex] = Color::Black;
+    }
 };
 
 #endif
