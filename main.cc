@@ -1,13 +1,5 @@
 #include "include/Graph.h"
 
-template<typename Vertex>
-void print(const Vertex& vertex) {
-    std::cout << vertex << " ";
-}
-
-template <typename Vertex, typename Distance = double>
-using Edge = Graph<Vertex, Distance>::Edge;
-
 int main() {
     Graph<int> graph;
 
@@ -24,10 +16,40 @@ int main() {
     graph.add_edge(4, 3, 3);
     graph.add_edge(3, 5, 4);
     graph.add_edge(5, 4, 5);
-   
-    graph.dfs(1, print<int>);
 
+    graph.print();
+
+    std::cout << "The degree of the vertex 4: " <<  graph.degree(4) << std::endl;
+    std::cout << "The order of the graph: " << graph.order() << std::endl;
+    
+    std::cout << "Traversing the graph in depth: ";
+    graph.dfs(1, [](const int vertex) {std::cout << vertex << " "; });
+    std::cout << std::endl;
+
+    // Solving an additional task with the action function
+    std::vector<int> visited;
+    graph.dfs(1, [&visited](const int vertex) { visited.push_back(vertex); });
+    for (int v : visited)
+        std::cout << v << " ";
+    std::cout << std::endl;
+
+    std::cout << "Dijkstra's algorithm" << std::endl;
+    for (const auto& edge : graph.shortest_path(1, 4))
+        std::cout << "From " << edge.from << " to " << edge.to << " distance = " << edge.distance << std::endl;
+
+    
     std::cout << "Center: " << graph.find_center() << std::endl;
+
+    std::cout << "An edge 5->4 is present in graph: " << graph.has_edge(5, 4) << std::endl;
+    std::cout << "An vertex 1 is present in graph: " << graph.has_vertex(1) << std::endl;
+    graph.remove_edge(5, 4);
+    graph.remove_vertex(1);
+    graph.remove_vertex(4);
+
+    graph.print();
+
+    std::cout << "An edge 5->4 is present in graph: " << graph.has_edge(5, 4) << std::endl;
+    std::cout << "An vertex 1 is present in graph: " << graph.has_vertex(1) << std::endl;
 
     return 0;
 }

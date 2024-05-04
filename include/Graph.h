@@ -127,6 +127,16 @@ public:
         return deg_in + deg_out;
     }
 
+    void print() const {
+        for (auto& v : _vertices) {
+            std::cout << v << " : ";
+            for (auto& e : _edges.at(v)) {
+                std::cout << "(" << e.to << ", " << e.distance << "),  ";
+            }
+            std::cout << std::endl;
+        }
+    }
+
     std::vector<Edge> shortest_path(const Vertex& from, const Vertex& to) const {
         if (!has_vertex(from) || !has_vertex(to))
             return {};
@@ -172,7 +182,6 @@ public:
                 }
             }
         }
-
         return {};
     }
 
@@ -182,7 +191,6 @@ public:
         for (const Vertex& vertex : _vertices) 
             colors[vertex] = Color::White;
         dfs_helper(start_vertex, colors, action, result);
-        std::cout << std::endl;
     }
 
     Vertex find_center() const {
