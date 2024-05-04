@@ -185,6 +185,35 @@ public:
         std::cout << std::endl;
     }
 
+    Vertex find_center() const {
+        Vertex center;
+        Distance min_eccentricity = INF;
+
+        for (const auto& vertex : _vertices) {
+            Distance max_distance = 0;
+            bool is_achievable = false;
+            for (const auto& other_vertex : _vertices) {
+                std::vector<Edge> path = shortest_path(other_vertex, vertex);
+                Distance distance = 0;
+                if (!path.empty())
+                    is_achievable = true;
+                for (const auto& edge : path) 
+                    distance += edge.distance;
+                max_distance = std::max(max_distance, distance);
+            }
+
+            if (!is_achievable)
+                max_distance = INF;
+
+            if (max_distance < min_eccentricity) {
+                min_eccentricity = max_distance;
+                center = vertex;
+            }
+        }
+
+        return center;
+    }
+ 
 private:
     void dfs_helper(const Vertex& start_vertex, std::unordered_map<Vertex, Color>& colors, 
         std::function<void(const Vertex&)> action, std::vector<Vertex>& result) const {
