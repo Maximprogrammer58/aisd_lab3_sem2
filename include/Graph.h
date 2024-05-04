@@ -2,11 +2,13 @@
 #define LAB_2_INCLUDE_GRAPH_H
 
 #define EPSILON 1e-10
+#define INF 1e9
 
 #include <algorithm>
 #include <functional>
 #include <iostream>
 #include <stack>
+#include <queue>
 #include <vector>
 #include <unordered_map>
 
@@ -51,7 +53,7 @@ public:
         return true;
     }
 
-    std::vector<Vertex> vertices() const {
+    const std::vector<Vertex>& vertices() const {
         return _vertices;
     }
 
@@ -100,7 +102,7 @@ public:
         return false;
     }
 
-    std::vector<Edge> edges(const Vertex& vertex) {
+    const std::vector<Edge>& edges(const Vertex& vertex) {
         if (!has_vertex(vertex))
             throw std::invalid_argument("vertex is not found");
         return _edges[vertex];
@@ -125,26 +127,62 @@ public:
         return deg_in + deg_out;
     }
 
-    void print() const {
-        for (auto& v : _vertices) {
-            std::cout << "v : ";
-            for (auto& e : _edges.at(v)) {
-                std::cout << "(" << e.to << ", " << e.distance << "),  ";
+    std::vector<Edge> shortest_path(const Vertex& from, const Vertex& to) const {
+        if (!has_vertex(from) || !has_vertex(to))
+            return {};
+
+        std::unordered_map<Vertex, Distance> distances;
+        std::unordered_map<Vertex, Vertex> prev;
+
+        for (const auto& vertex : _vertices) 
+            distances[vertex] = INF;
+        distances[from] = 0;
+
+        std::priority_queue<std::pair<Distance, Vertex>, std::vector<std::pair<Distance, Vertex>>, std::greater<std::pair<Distance, Vertex>>> pq;
+        pq.push({ 0, from });
+
+        while (!pq.empty()) {
+            Vertex u = pq.top().second;
+            pq.pop();
+
+            if (u == to) {
+                std::vector<Edge> path;
+                Vertex current = to;
+                while (current != from) {
+                    for (const auto& edge : _edges.at(prev[current])) {
+                        if (edge.to == current) {
+                            path.push_back(edge);
+                            break;
+                        }
+                    }
+                    current = prev[current];
+                }
+                std::reverse(path.begin(), path.end());
+                return path;
             }
-            std::cout << std::endl;
+
+            if (distances[u] < INF) {
+                for (const auto& edge : _edges.at(u)) {
+                    Distance alt = distances[u] + edge.distance;
+                    if (alt < distances[edge.to]) {
+                        distances[edge.to] = alt;
+                        prev[edge.to] = u;
+                        pq.push({ alt, edge.to });
+                    }
+                }
+            }
         }
+
+        return {};
     }
 
-    //поиск кратчайшего пути
-    std::vector<Edge> shortest_path(const Vertex& from, const Vertex& to) const;
-
-    // Traversing the graph in depth
     void dfs(const Vertex& start_vertex, std::function<void(const Vertex&)> action) const {
         std::unordered_map<Vertex, Color> colors;
         std::vector<Vertex> result;
         for (const Vertex& vertex : _vertices) 
             colors[vertex] = Color::White;
         dfs_helper(start_vertex, colors, action, result);
+        std::cout << std::endl;
     }
 
 private:
