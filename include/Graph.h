@@ -27,6 +27,17 @@ private:
     std::vector<Vertex> _vertices;
     std::unordered_map<Vertex, std::vector<Edge>> _edges;
 
+    void dfs_helper(const Vertex& start_vertex, std::unordered_map<Vertex, Color>& colors,
+        std::function<void(const Vertex&)> action, std::vector<Vertex>& result) const {
+        colors[start_vertex] = Color::Grey;
+        action(start_vertex);
+        result.push_back(start_vertex);
+        for (const Edge& edge : _edges.at(start_vertex))
+            if (colors[edge.to] == Color::White)
+                dfs_helper(edge.to, colors, action, result);
+        colors[start_vertex] = Color::Black;
+    }
+
 public:
     bool has_vertex(const Vertex& v) const {
         return std::find(_vertices.begin(), _vertices.end(), v) != _vertices.end();
@@ -141,6 +152,17 @@ public:
         if (!has_vertex(from) || !has_vertex(to))
             return {};
 
+        for (const Vertex& vertex : _vertices) {
+            for (const Edge& edge : _edges.at(vertex)) {
+                if (edge.distance < 0) {
+                    throw std::runtime_error("The graph contains negative weights");
+                }
+                if (edge.to == vertex) {
+                    throw std::runtime_error("There are cycles in the graph");
+                }
+            }
+        }
+
         std::unordered_map<Vertex, Distance> distances;
         std::unordered_map<Vertex, Vertex> prev;
 
@@ -220,18 +242,6 @@ public:
         }
 
         return center;
-    }
- 
-private:
-    void dfs_helper(const Vertex& start_vertex, std::unordered_map<Vertex, Color>& colors, 
-        std::function<void(const Vertex&)> action, std::vector<Vertex>& result) const {
-        colors[start_vertex] = Color::Grey;
-        action(start_vertex);
-        result.push_back(start_vertex);
-        for (const Edge& edge : _edges.at(start_vertex))
-            if (colors[edge.to] == Color::White)
-                dfs_helper(edge.to, colors, action, result);
-        colors[start_vertex] = Color::Black;
     }
 };
 

@@ -15,6 +15,7 @@ int main() {
     graph.add_edge(4, 2, 1);
     graph.add_edge(4, 3, 3);
     graph.add_edge(3, 5, 4);
+    graph.add_edge(1, 3, 1);
     graph.add_edge(5, 4, 5);
 
     graph.print();
