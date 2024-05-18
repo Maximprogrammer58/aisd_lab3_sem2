@@ -17,6 +17,8 @@ endif()
 add_library(Graph SHARED
     "include/Graph.h"
     "src/Graph.cc"
+    "include/Task.h"
+    "src/Task.cc"
 )
 target_include_directories(Graph PUBLIC "include")
 

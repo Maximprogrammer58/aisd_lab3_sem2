@@ -1,4 +1,5 @@
 #include "include/Graph.h"
+#include "include/Task.h"
 
 int main() {
     Graph<int> graph;
@@ -39,7 +40,7 @@ int main() {
         std::cout << "From " << edge.from << " to " << edge.to << " distance = " << edge.distance << std::endl;
 
     
-    std::cout << "Center: " << graph.find_center() << std::endl;
+    std::cout << "Center: " << find_center(graph) << std::endl;
 
     std::cout << "An edge 5->4 is present in graph: " << graph.has_edge(5, 4) << std::endl;
     std::cout << "An vertex 1 is present in graph: " << graph.has_vertex(1) << std::endl;
