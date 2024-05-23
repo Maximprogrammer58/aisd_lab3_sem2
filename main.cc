@@ -16,7 +16,7 @@ int main() {
     graph.add_edge(4, 2, 1);
     graph.add_edge(4, 3, 3);
     graph.add_edge(3, 5, 4);
-    graph.add_edge(1, 3, 1);
+    graph.add_edge(1, 3, 4);
     graph.add_edge(5, 4, 5);
 
     graph.print();
@@ -35,10 +35,13 @@ int main() {
         std::cout << v << " ";
     std::cout << std::endl;
 
+    double distance = 0.0;
     std::cout << "Dijkstra's algorithm" << std::endl;
-    for (const auto& edge : graph.shortest_path(1, 4))
+    for (const auto& edge : graph.shortest_path(1, 4)) {
         std::cout << "From " << edge.from << " to " << edge.to << " distance = " << edge.distance << std::endl;
-
+        distance += edge.distance;
+    }
+    std::cout << "Distance from 1 to 4 =  " << distance << std::endl;
     
     std::cout << "Center: " << find_center(graph) << std::endl;
 

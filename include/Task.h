@@ -1,5 +1,5 @@
-#ifndef LAB_2_INCLUDE_TASK_H
-#define LAB_2_INCLUDE_TASK_H
+#ifndef LAB_3_INCLUDE_TASK_H
+#define LAB_3_INCLUDE_TASK_H
 
 #include "../include/Graph.h"
 

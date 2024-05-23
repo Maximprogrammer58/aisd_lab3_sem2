@@ -1,5 +1,5 @@
-#ifndef LAB_2_INCLUDE_GRAPH_H
-#define LAB_2_INCLUDE_GRAPH_H
+#ifndef LAB_3_INCLUDE_GRAPH_H
+#define LAB_3_INCLUDE_GRAPH_H
 
 #define EPSILON 1e-10
 #define INF 1e9
@@ -7,7 +7,6 @@
 #include <algorithm>
 #include <functional>
 #include <iostream>
-#include <stack>
 #include <queue>
 #include <vector>
 #include <unordered_map>
@@ -44,7 +43,7 @@ public:
     }
 
     bool add_vertex(const Vertex& v) {
-        if (std::find(_vertices.begin(), _vertices.end(), v) != _vertices.end())
+        if (has_vertex(v))
             return false;
         _vertices.push_back(v);
         _edges[v] = {};
@@ -139,9 +138,9 @@ public:
     }
 
     void print() const {
-        for (auto& v : _vertices) {
+        for (const auto& v : _vertices) {
             std::cout << v << " : ";
-            for (auto& e : _edges.at(v)) {
+            for (const auto& e : _edges.at(v)) {
                 std::cout << "(" << e.to << ", " << e.distance << "),  ";
             }
             std::cout << std::endl;
